@@ -32,7 +32,7 @@ The **Multinational Retail Data Centralisation** is designed to consolidate vari
   - **Secure Credential Handling:** Utilizes a `db_creds.yaml` (ignored by git for security) to securely handle database credentials.
   - **Table Interaction:** Capable of listing, reading, and writing to the database tables.
   
-## Installation Instructions
+## Installation
 ### Prerequisites
 - Python 3.x
 - PostgreSQL
@@ -51,7 +51,7 @@ Ensure you have the prerequisites mentioned above installed on your local machin
 - Ensure PostgreSQL is set up and running.
 - Set up a database named sales_data.
   
-## Usage Instructions
+## Usage
 ### Key Scripts & Usage
 - data_extraction.py: Contains the DataExtractor class, used for data extraction from various sources.
 - data_cleaning.py: Includes the DataCleaning class with methods for cleaning extracted data.
