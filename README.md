@@ -1,6 +1,4 @@
-# README.md
-
-## Multinational Retail Data Centralisation
+# Multinational Retail Data Centralisation
 
 ## Table of Contents
 1. [Description](#description)
