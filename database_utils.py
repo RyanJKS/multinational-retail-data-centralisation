@@ -45,8 +45,20 @@ class DatabaseConnector:
               data_frame.to_sql(name=table_name,con=connection)
               print(f'Successfully uploaded {table_name} to "sales_data" database.')
                 
-
         except Exception as e:
             print(f"An error occurred: {e}")
+
+    # Connection to my PostgreSQL database
+    def connect_my_db(self) -> create_engine:
+        my_db_creds = self.read_db_creds()
+        USER = my_db_creds['MY_USER']
+        PASSWORD = my_db_creds['MY_PASSWORD']
+        ENDPOINT = my_db_creds['MY_HOST']
+        PORT = my_db_creds['MY_PORT']
+        DATABASE = my_db_creds['MY_DATABASE']
+
+        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
+        
+        return engine
 
 

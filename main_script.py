@@ -1,6 +1,7 @@
 import data_cleaning
 import data_extraction
 import database_utils
+import database_schema
 
 
 #Create instance of main class
@@ -8,7 +9,7 @@ db_connector = database_utils.DatabaseConnector()
 db_extractor = data_extraction.DataExtractor()
 data_cleaner = data_cleaning.DataCleaning()
 
-# # Extract
+# Extract
 table_list = db_connector.list_db_tables()
 legacy_users = table_list[1]
 
@@ -33,7 +34,7 @@ clean_pdf_data = data_cleaner.clean_card_data(extract_pdf_data)
 # Upload
 db_connector.upload_to_db(clean_pdf_data,"dim_card_details")
 
-####################### API #########################################
+###################### API #########################################
 
 headers = {
     'x-api-key': 'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'
@@ -92,3 +93,9 @@ cleaned_date_times = data_cleaner.clean_date_data(date_times)
 
 # Upload
 db_connector.upload_to_db(cleaned_date_times,"dim_date_times")
+
+# ################# MILESTONE 3 - STAR BASED DATABASE SCHEMA ###################################
+
+engine = db_connector.connect_my_db()
+
+database_schema.execute_db_operations(engine)

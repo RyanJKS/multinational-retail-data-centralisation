@@ -31,6 +31,11 @@ The **Multinational Retail Data Centralisation** is designed to consolidate vari
 - **Database Interaction:** Using the `DatabaseConnector` class to interact with the PostgreSQL database, facilitating data uploads once it has been extracted and cleaned.
   - **Secure Credential Handling:** Utilizes a `db_creds.yaml` (ignored by git for security) to securely handle database credentials.
   - **Table Interaction:** Capable of listing, reading, and writing to the database tables.
+
+#### Database Schema Adjustments
+- **Updating Table Schemas:** Functions are used to execute sql queries to modify data types, lengths, and structures in various tables to ensure data consistency and to optimise storage.
+- **Primary and Foreign Key Management:** Ensuring coherent relation among various data tables by adding PRIMARY KEYS to dim tables and establishing FOREIGN KEYS in the orders_table, creating a comprehensive star schema, and thereby maintaining referential integrity.
+- **Data Cleaning at Database Level:** Executes cleaning operations such as removing symbols from price data, converting data types, and adding new calculated columns (like weight_class in dim_products) which enhance the richness and usability of the data.
   
 ## Installation
 ### Prerequisites
@@ -42,7 +47,7 @@ The **Multinational Retail Data Centralisation** is designed to consolidate vari
 ### Instructions
 1. **Clone the repository**
 ```sh
-git clone <https://github.com/RyanJKS/multinational-retail-data-centralisation.git>
+git clone https://github.com/RyanJKS/multinational-retail-data-centralisation.git
 ```
 2. **Install dependencies**
 Ensure you have the prerequisites mentioned above installed on your local machine.
@@ -57,6 +62,7 @@ Ensure you have the prerequisites mentioned above installed on your local machin
 - data_cleaning.py: Includes the DataCleaning class with methods for cleaning extracted data.
 - database_utils.py: Contains the DatabaseConnector class, which facilitates connection and data upload to the database.
 - main_script.py: A test script demonstrating the usage of functions and methods from other modules.
+- database_schema.py: This script is for modifying and refining the database schema. It adjusts data types, introduces keys, and enhances the relational structure of the database. It makes the orders_table the single source of truth which is at the centre of our star-based database schema.
 
 In order to have all the information extracted from all sources mentioned above and uploaded in your postgres database,
 run the following command in all the python script's directory in the terminal: 
@@ -70,7 +76,8 @@ project/
 ├── data_extraction.py    
 ├── data_cleaning.py      
 ├── database_utils.py     
-├── main_script.py        
+├── main_script.py 
+├── database_schema.py       
 │
 ├── db_creds.yaml         
 │
