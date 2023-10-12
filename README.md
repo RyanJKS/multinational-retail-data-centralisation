@@ -75,14 +75,15 @@ project/
 │
 ├── data_extraction.py    
 ├── data_cleaning.py
-├── database_schema.py        
+├── database_schema.py      
 ├── database_utils.py     
 ├── main_script.py      
 │
 ├── db_creds.yaml         
 │
 ├── .gitignore               
-└── README.md             
+└── README.md  
+    
 
 ## Licence Information
 This project is owned by AiCore and was part of an immersive program with specialisation, Data Engineering. AiCore is a specialist ai & data career accelerator from which I completed several industry-level projects to gain vital experience and be qualified in the use of several technologies.
