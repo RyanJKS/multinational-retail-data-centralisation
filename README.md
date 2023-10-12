@@ -74,10 +74,10 @@ python3 main_script.py
 project/
 │
 ├── data_extraction.py    
-├── data_cleaning.py      
+├── data_cleaning.py
+├── database_schema.py        
 ├── database_utils.py     
-├── main_script.py 
-├── database_schema.py       
+├── main_script.py      
 │
 ├── db_creds.yaml         
 │
