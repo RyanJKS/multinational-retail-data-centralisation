@@ -1,7 +1,7 @@
 import data_cleaning
 import data_extraction
-import database_utils
 import database_schema
+import database_utils
 
 
 #Create instance of main class
@@ -55,7 +55,7 @@ cleaned_store_data = data_cleaner.clean_store_data(store_data)
 # Upload
 db_connector.upload_to_db(cleaned_store_data,"dim_store_details")
 
-###########################  S3 Buckets ##################################
+##########################  S3 Buckets ##################################
 
 s3_uri = 's3://data-handling-public/products.csv'
 
@@ -94,7 +94,7 @@ cleaned_date_times = data_cleaner.clean_date_data(date_times)
 # Upload
 db_connector.upload_to_db(cleaned_date_times,"dim_date_times")
 
-# ################# MILESTONE 3 - STAR BASED DATABASE SCHEMA ###################################
+################# MILESTONE 3 - STAR BASED DATABASE SCHEMA ###################################
 
 engine = db_connector.connect_my_db()
 

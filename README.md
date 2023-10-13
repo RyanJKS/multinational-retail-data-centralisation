@@ -36,13 +36,20 @@ The **Multinational Retail Data Centralisation** is designed to consolidate vari
 - **Updating Table Schemas:** Functions are used to execute sql queries to modify data types, lengths, and structures in various tables to ensure data consistency and to optimise storage.
 - **Primary and Foreign Key Management:** Ensuring coherent relation among various data tables by adding PRIMARY KEYS to dim tables and establishing FOREIGN KEYS in the orders_table, creating a comprehensive star schema, and thereby maintaining referential integrity.
 - **Data Cleaning at Database Level:** Executes cleaning operations such as removing symbols from price data, converting data types, and adding new calculated columns (like weight_class in dim_products) which enhance the richness and usability of the data.
+
+A basic Entity-Relationship (ER) model for this database, sourced from pgAdmin4, is shown below.
+
+<div align="center">
+  <img src="/images/Database_Schema_Relationship.png" alt="Logo">
+</div>
   
 ## Installation
 ### Prerequisites
 - Python 3.x
 - PostgreSQL
+- PgAdmin4
 - AWS CLI configured
-- Required Python packages: SQLAlchemy, PyYAML, pandas, boto3, tabula-py, validate_email.
+- Required Python packages: SQLAlchemy, PyYAML, pandas, boto3, tabula-py
 
 ### Instructions
 1. **Clone the repository**
@@ -63,9 +70,21 @@ Ensure you have the prerequisites mentioned above installed on your local machin
 - database_utils.py: Contains the DatabaseConnector class, which facilitates connection and data upload to the database.
 - main_script.py: A test script demonstrating the usage of functions and methods from other modules.
 - database_schema.py: This script is for modifying and refining the database schema. It adjusts data types, introduces keys, and enhances the relational structure of the database. It makes the orders_table the single source of truth which is at the centre of our star-based database schema.
+- database_query.py: Contains scripts to query the database for specific source of information
 
-In order to have all the information extracted from all sources mentioned above and uploaded in your postgres database,
-run the following command in all the python script's directory in the terminal: 
+In order to have all the information extracted from all sources mentioned above and uploaded in your postgres database, as well as set up the star-based database schema;
+
+Run the following command in all the python script's directory in the terminal: 
+```sh
+python3 main_script.py
+```
+After running this command, a message shown below should appear in your terminal, otherwise, please check your database connection or follow the error message as it will guide you towards the source.
+
+<div align="center">
+  <img src="/images/main_script_output.png" alt="Main_Script_Output">
+</div>
+
+To query the database for selective information, run the following command after having all the database set up from the previous command:
 ```sh
 python3 main_script.py
 ```

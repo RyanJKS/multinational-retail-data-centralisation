@@ -187,7 +187,9 @@ class DataCleaning:
         """
         df = data.copy()
 
+        # Remove rows with NULL, unused column 'Unnamed: 0' and drop duplicates
         df = df.dropna()
+        df = df.drop(['Unnamed: 0'], axis=1)
 
         df = df.drop_duplicates()
 
