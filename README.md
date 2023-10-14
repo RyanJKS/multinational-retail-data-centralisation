@@ -86,7 +86,7 @@ After running this command, a message shown below should appear in your terminal
 
 To query the database for selective information, run the following command after having all the database set up from the previous command:
 ```sh
-python3 main_script.py
+python3 database_query.py
 ```
 
 ## File Structure
@@ -94,6 +94,7 @@ project/
 │
 ├── data_extraction.py    
 ├── data_cleaning.py
+├── database_query.py      
 ├── database_schema.py      
 ├── database_utils.py     
 ├── main_script.py      

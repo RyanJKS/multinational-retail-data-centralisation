@@ -19,13 +19,14 @@ def execute_sql_query(connection: object, query: str) -> None:
 
 
 # Task 1 - How many stores does the business have and in which countries?
-# TO DO - Check GB since web store counts in UK (they want all stores not online ones)
 def total_no_stores(connection: object) -> None:
 
+    # Count store by store_code and exclude online store
     query = '''
             SELECT 	country_code AS country,
-                    COUNT(country_code) AS total_no_stores
+                    COUNT(store_code) AS total_no_stores
             FROM dim_store_details
+            WHERE store_code != 'WEB-1388012W'
             GROUP BY country_code;
             '''
     result = execute_sql_query(connection, query)
@@ -95,23 +96,22 @@ def online_sales(connection: object) -> None:
 
 
 # Task 5 - What percentage of sales come though each type of store?
-# TO DO - rounded numbers offset + check subqueries
 def sales_percentage_by_store(connection: object) -> None:
 
     query = '''
             WITH cte AS (
-            SELECT 
-                dsd.store_type,
-                ROUND(CAST(SUM(ot.product_quantity * dp.product_price) AS NUMERIC), 2) AS total_sales,
-                SUM(ot.product_quantity * dp.product_price) AS total_sales_unrounded
-            FROM 
-                orders_table AS ot
-            JOIN dim_store_details AS dsd
-                ON dsd.store_code = ot.store_code
-            JOIN dim_products AS dp
-                ON dp.product_code = ot.product_code
-            GROUP BY 
-                dsd.store_type
+                SELECT 
+                    dsd.store_type,
+                    ROUND(CAST(SUM(ot.product_quantity * dp.product_price) AS NUMERIC), 2) AS total_sales,
+                    SUM(ot.product_quantity * dp.product_price) AS total_sales_unrounded
+                FROM 
+                    orders_table AS ot
+                JOIN dim_store_details AS dsd
+                    ON dsd.store_code = ot.store_code
+                JOIN dim_products AS dp
+                    ON dp.product_code = ot.product_code
+                GROUP BY 
+                    dsd.store_type
             )
             SELECT 
                 store_type,
@@ -135,16 +135,20 @@ def sales_percentage_by_store(connection: object) -> None:
 def yearly_highest_sale_month(connection: object) -> None:
 
     query = '''
-            SELECT	ROUND(CAST(SUM(ot.product_quantity * dp.product_price) AS NUMERIC), 2) AS total_sales,
-                    ddt.year,
-                    ddt.month
-            FROM orders_table AS ot
+            SELECT	
+                ROUND(CAST(SUM(ot.product_quantity * dp.product_price) AS NUMERIC), 2) AS total_sales,
+                ddt.year,
+                ddt.month
+            FROM 
+                orders_table AS ot
             JOIN dim_date_times AS ddt 
                 ON ddt.date_uuid = ot.date_uuid
             JOIN dim_products AS dp 
                 ON dp.product_code = ot.product_code
-            GROUP BY ddt.year, ddt.month
-            ORDER BY total_sales DESC
+            GROUP BY 
+                    ddt.year, ddt.month
+            ORDER BY 
+                    total_sales DESC
             LIMIT 10;
             '''
     result = execute_sql_query(connection, query)
@@ -171,17 +175,22 @@ def staff_headcount(connection: object) -> None:
 def german_store_type_sales(connection: object) -> None:
     
     query = '''
-            SELECT	ROUND(CAST(SUM(ot.product_quantity * dp.product_price) AS NUMERIC), 2) AS total_sales,
-                    dsd.store_type,
-                    dsd.country_code
-            FROM orders_table AS ot
+            SELECT	
+                ROUND(CAST(SUM(ot.product_quantity * dp.product_price) AS NUMERIC), 2) AS total_sales,
+                dsd.store_type,
+                dsd.country_code
+            FROM 
+                orders_table AS ot
             JOIN dim_products AS dp
                 ON dp.product_code = ot.product_code
             JOIN dim_store_details AS dsd
                 ON dsd.store_code = ot.store_code
-            WHERE dsd.country_code LIKE 'DE'
-            GROUP BY dsd.country_code, dsd.store_type
-            ORDER BY total_sales ASC;
+            WHERE 
+                dsd.country_code LIKE 'DE'
+            GROUP BY 
+                dsd.country_code, dsd.store_type
+            ORDER BY
+                total_sales ASC;
             '''
     result = execute_sql_query(connection, query)
 
@@ -189,12 +198,73 @@ def german_store_type_sales(connection: object) -> None:
     print(pd.DataFrame(result, columns=result.keys()))
 
 # Task 9 - How quickly is the company making sales?
-# TO DO
 def average_sale_time_yearly(connection: object) -> None:
     
     query = '''
+            WITH next_time_cte AS(
+                SELECT 
+                        year,
+                        month,
+                        day,
+                        timestamp,
+                        LEAD(timestamp) OVER( PARTITION BY year ORDER BY year, month, day, timestamp) AS next_timestamp
+                FROM
+                        dim_date_times	
+                ORDER BY
+                        year, month, day, timestamp
+            ),
+
+            new_times_cte AS (
+
+                SELECT	
+                        year,
+                        month,
+                        day,
+                        timestamp,
+                        next_timestamp,
+                        CAST(CONCAT(year, '-', month, '-', day, ' ', timestamp) AS TIMESTAMP) AS purchase_time,
+                        CAST(CONCAT(year, '-', month, '-', day, ' ', next_timestamp) AS TIMESTAMP) AS next_purchase_time
+                        
+                FROM
+                        next_time_cte
+                ORDER BY
+                        year, month, day, timestamp
+            ),
+            time_difference_cte AS (
+                SELECT	
+                        year,
+                        month,
+                        day,
+                        timestamp,
+                        next_timestamp,
+                        ABS(EXTRACT(EPOCH FROM(next_purchase_time - purchase_time))) AS purchase_time_difference
+                FROM
+                        new_times_cte
+                ORDER BY
+                        year, month, day, timestamp
+            )
+
+            SELECT
+                    year,
+                    CONCAT(
+                    '"hours": ', FLOOR(AVG(purchase_time_difference) / 3600), ', ',
+                    '"minutes": ', FLOOR((AVG(purchase_time_difference) % 3600) / 60), ', ',
+                    '"seconds": ', FLOOR(AVG(purchase_time_difference) % 60), ', ',
+                    '"milliseconds": ', ROUND((AVG(purchase_time_difference) - FLOOR(AVG(purchase_time_difference))) * 1000)
+                    ) AS average_yearly_time_difference
+            FROM
+                    time_difference_cte
+            GROUP BY
+                    year
+            ORDER BY
+                    AVG(purchase_time_difference) DESC
+            LIMIT
+                    5;
             '''
-    execute_sql_query(connection, query)
+    result = execute_sql_query(connection, query)
+
+    print("Query 9:")
+    print(pd.DataFrame(result, columns=result.keys()))
 
 # Main function to run all queries to the database
 def execute_db_queries(engine: object) -> None:
@@ -211,6 +281,7 @@ def execute_db_queries(engine: object) -> None:
             yearly_highest_sale_month(connection)
             staff_headcount(connection)
             german_store_type_sales(connection)
+            average_sale_time_yearly(connection)
 
             print("End of database queries.")
 
