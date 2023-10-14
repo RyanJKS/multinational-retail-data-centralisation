@@ -199,49 +199,45 @@ def german_store_type_sales(connection: object) -> None:
 
 # Task 9 - How quickly is the company making sales?
 def average_sale_time_yearly(connection: object) -> None:
-    
+    '''  
+    - Calculate the purchase time for each order by concatenating the year, month, day and timestamp columns.
+    - Calculate the next purchase time for each order by using the LEAD function to get the next purchase time for each order.
+    - Calculate the purchase time difference in seconds for each order by using the EXTRACT(EPOCH FROM()) functions to get the difference between the next_purchase_time and the current purchase_time.
+    - Calculate the average purchase time difference for each year by using the FLOOR and ROUND functions to get the average time difference in hours, minutes, seconds and milliseconds.
+    '''
     query = '''
-            WITH next_time_cte AS(
-                SELECT 
+            WITH purchase_time_cte AS(
+                SELECT
                         year,
                         month,
                         day,
                         timestamp,
-                        LEAD(timestamp) OVER( PARTITION BY year ORDER BY year, month, day, timestamp) AS next_timestamp
+                        CAST(CONCAT(year, '-', month, '-', day, ' ', timestamp) AS TIMESTAMP) AS purchase_time
                 FROM
-                        dim_date_times	
+                        dim_date_times
                 ORDER BY
                         year, month, day, timestamp
             ),
-
-            new_times_cte AS (
-
-                SELECT	
+            next_purchase_time_cte AS(
+                SELECT
                         year,
-                        month,
-                        day,
-                        timestamp,
-                        next_timestamp,
-                        CAST(CONCAT(year, '-', month, '-', day, ' ', timestamp) AS TIMESTAMP) AS purchase_time,
-                        CAST(CONCAT(year, '-', month, '-', day, ' ', next_timestamp) AS TIMESTAMP) AS next_purchase_time
-                        
+                        purchase_time,
+                        LEAD(purchase_time) OVER (PARTITION BY year ORDER BY purchase_time) AS next_purchase_time
                 FROM
-                        next_time_cte
+                        purchase_time_cte
                 ORDER BY
-                        year, month, day, timestamp
+                        year, purchase_time
             ),
-            time_difference_cte AS (
-                SELECT	
+            purchase_time_difference_cte AS (
+                SELECT
                         year,
-                        month,
-                        day,
-                        timestamp,
-                        next_timestamp,
-                        ABS(EXTRACT(EPOCH FROM(next_purchase_time - purchase_time))) AS purchase_time_difference
+                        purchase_time,
+                        next_purchase_time,
+                        EXTRACT(EPOCH FROM(next_purchase_time - purchase_time)) AS purchase_time_difference
                 FROM
-                        new_times_cte
+                        next_purchase_time_cte
                 ORDER BY
-                        year, month, day, timestamp
+                        year, purchase_time, next_purchase_time
             )
 
             SELECT
@@ -249,11 +245,11 @@ def average_sale_time_yearly(connection: object) -> None:
                     CONCAT(
                     '"hours": ', FLOOR(AVG(purchase_time_difference) / 3600), ', ',
                     '"minutes": ', FLOOR((AVG(purchase_time_difference) % 3600) / 60), ', ',
-                    '"seconds": ', FLOOR(AVG(purchase_time_difference) % 60), ', ',
-                    '"milliseconds": ', ROUND((AVG(purchase_time_difference) - FLOOR(AVG(purchase_time_difference))) * 1000)
-                    ) AS average_yearly_time_difference
+                    '"seconds": ', ROUND(AVG(purchase_time_difference) % 60), ', ',
+                    '"milliseconds": ', ROUND((AVG(purchase_time_difference)*1000)%1000)
+                    ) AS actual_time_taken
             FROM
-                    time_difference_cte
+                    purchase_time_difference_cte
             GROUP BY
                     year
             ORDER BY

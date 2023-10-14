@@ -8,7 +8,7 @@
 5. [License](#license)
 
 ## Description
-The **Multinational Retail Data Centralisation** is designed to consolidate various datasets related to sales, customers, products, and stores from different data sources into a centralized database on Postgres. As a multinational company dealing with various goods globally, handling data effectively and efficiently from multiple sources like CSV files, APIs, AWS RDS, S3 Buckets, and PDFs, was becoming a daunting task. This project aims to eliminate data silos by creating a single source of truth for all sales-related data which is accessible and analyzable, promoting data-driven decision-making within the organization.
+The **Multinational Retail Data Centralisation** is designed to consolidate various datasets related to sales, customers, products, and stores from different data sources into a centralized database on Postgres. As a multinational company dealing with various goods globally, handling data effectively and efficiently from multiple sources like CSV files, APIs, AWS RDS, S3 Buckets, and PDFs, was becoming a time-consuming task. This project aims to eliminate data storage from different areas by creating a single source of truth for all sales-related data which is accessible and analyzable, promoting data-driven decision-making within the organisation.
 
 ### Aim of the Project
 - Extract data from varied data sources and interacting with different data sources (APIs, Databases, S3 Buckets, PDF)
@@ -16,6 +16,7 @@ The **Multinational Retail Data Centralisation** is designed to consolidate vari
 - Handling databases with Python using SQLAlchemy.
 - Ensuring secure management of database credentials.
 - Consolidate cleaned data into a single, centralized PostgreSQL database.
+- Design specific queries to acquire results in order to promote data-driven decision by the organisation.
 
 #### Data Extraction
 - **Various Data Sources:** Capable of extracting data from different sources, such as:
@@ -35,12 +36,12 @@ The **Multinational Retail Data Centralisation** is designed to consolidate vari
 #### Database Schema Adjustments
 - **Updating Table Schemas:** Functions are used to execute sql queries to modify data types, lengths, and structures in various tables to ensure data consistency and to optimise storage.
 - **Primary and Foreign Key Management:** Ensuring coherent relation among various data tables by adding PRIMARY KEYS to dim tables and establishing FOREIGN KEYS in the orders_table, creating a comprehensive star schema, and thereby maintaining referential integrity.
-- **Data Cleaning at Database Level:** Executes cleaning operations such as removing symbols from price data, converting data types, and adding new calculated columns (like weight_class in dim_products) which enhance the richness and usability of the data.
+- **Data Cleaning at Database Level:** Executes cleaning operations such as removing symbols from price data, converting data types, and adding new calculated columns (like weight_class in dim_products) which enhance usability of the data.
 
 A basic Entity-Relationship (ER) model for this database, sourced from pgAdmin4, is shown below.
 
 <div align="center">
-  <img src="/images/Database_Schema_Relationship.png" alt="Logo">
+  <img src="/images/Database_Schema_Relationship.png" alt="ER_Diagram">
 </div>
   
 ## Installation
@@ -65,12 +66,12 @@ Ensure you have the prerequisites mentioned above installed on your local machin
   
 ## Usage
 ### Key Scripts & Usage
-- data_extraction.py: Contains the DataExtractor class, used for data extraction from various sources.
-- data_cleaning.py: Includes the DataCleaning class with methods for cleaning extracted data.
-- database_utils.py: Contains the DatabaseConnector class, which facilitates connection and data upload to the database.
-- main_script.py: A test script demonstrating the usage of functions and methods from other modules.
-- database_schema.py: This script is for modifying and refining the database schema. It adjusts data types, introduces keys, and enhances the relational structure of the database. It makes the orders_table the single source of truth which is at the centre of our star-based database schema.
-- database_query.py: Contains scripts to query the database for specific source of information
+- `data_extraction.py`: Contains the DataExtractor class, used for data extraction from various sources.
+- `data_cleaning.py`: Includes the DataCleaning class with methods for cleaning extracted data.
+- `database_utils.py`: Contains the DatabaseConnector class, which facilitates connection and data upload to the database.
+- `main_script.py`: A test script demonstrating the usage of functions and methods from other modules.
+- `database_schema.py`: This script is for modifying and refining the database schema. It adjusts data types, introduces keys, and enhances the relational structure of the database. It makes the orders_table the single source of truth which is at the centre of our star-based database schema.
+- `database_query.py`: Contains scripts to query the database for specific source of information
 
 In order to have all the information extracted from all sources mentioned above and uploaded in your postgres database, as well as set up the star-based database schema;
 
