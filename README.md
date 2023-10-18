@@ -46,7 +46,8 @@ The **Multinational Retail Data Centralisation** is designed to consolidate vari
 - **Primary and Foreign Key Management:** Ensuring coherent relation among various data tables by adding PRIMARY KEYS to dim tables and establishing FOREIGN KEYS in the orders_table, creating a comprehensive star schema, and thereby maintaining referential integrity.
 - **Data Cleaning at Database Level:** Executes cleaning operations such as removing symbols from price data, converting data types, and adding new calculated columns (like weight_class in dim_products) which enhance usability of the data.
 
-#####Tasks & Examples
+**Tasks & Examples**
+
 Here are the full list of tasks and a few examples that were done in order to develop the star-based schema of the database using SQL queries with SQLalchemy.
 
 - Task 1: Cast the columns of the orders_table to the correct data types.
@@ -113,7 +114,8 @@ A basic Entity-Relationship (ER) diagram for this database, sourced from pgAdmin
 
  - **Querying the data:** Writing business led queries that benefit the business in making informed data-led decisions.
 
-#####Tasks & Examples
+**Tasks & Examples**
+
 Here are the full list of tasks and a few examples that were done using SQL and SQLAlchemy.
 
 - Task 1: How many stores does the business have and in which countries?
