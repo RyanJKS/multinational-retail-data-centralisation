@@ -4,31 +4,38 @@ from sqlalchemy import text
 
 ########################################## MILESTONE 3 ##############################################
 def execute_sql_query(connection: object, query: str) -> None:
-    '''
-    Execute a SQL query using a database connection and handle exceptions.
+    """
+    The function `execute_sql_query` executes a SQL query using a given database connection and handles
+    any exceptions that occur.
+    
+    :param connection: The `connection` parameter is an object that represents a connection to a
+    database. It is created using a database driver `psycopg2` for PostgreSQL.
+    :type connection: object
+    :param query: The `query` parameter is a string that represents the SQL query you want to execute.
+    :type query: str
+    :return: The `execute_sql_query` function is returning the result of the
+    `connection.execute(text(query))` statement.
+    """
 
-    Args:
-    connection (object): Established database connection such as create_engine output.
-    query (str): SQL query string to execute.
-    '''
     try:
         connection.execute(text(query))
-        # print("Successfully executed sql query")
     except Exception as e:
         print(f"Failed to execute query: {e}")
 
 
 def find_max_lengths(connection: object, query: str) -> tuple:
-    '''
-    Retrieve maximum lengths for each column based on the provided SQL query.
+    """
+    The function `find_max_lengths` executes a query on a database connection and returns the first
+    result, or None if an exception occurs.
+    
+    :param connection: The `connection` parameter is an object that represents a connection to a
+    database. It is used to execute queries and retrieve data from the database
+    :type connection: object
+    :param query: The `query` parameter is a string that represents the SQL query you want to execute.
+    :type query: str
+    :return: a tuple.
+    """
 
-    Args:
-    connection (object): Established database connection.
-    query (str): SQL query string to fetch data for determining maximum lengths.
-
-    Returns:
-    tuple: Contains maximum lengths for each specified column, or None if an exception occurs.
-    '''
     try:
         result = connection.execute(text(query))
         return result.first()
@@ -53,8 +60,8 @@ def update_orders_table(connection: object) -> None:
                         ALTER COLUMN user_uuid TYPE UUID USING user_uuid::uuid,
                         ALTER COLUMN product_quantity TYPE SMALLINT, 
                         ALTER COLUMN card_number TYPE VARCHAR({max_lengths[0]}),
-                        ALTER COLUMN store_code TYPE VARCHAR({max_lengths[0]}), 
-                        ALTER COLUMN product_code TYPE VARCHAR({max_lengths[0]}); 
+                        ALTER COLUMN store_code TYPE VARCHAR({max_lengths[1]}), 
+                        ALTER COLUMN product_code TYPE VARCHAR({max_lengths[2]}); 
                         '''
     execute_sql_query(connection, update_type_query)
 
@@ -247,7 +254,13 @@ def add_foreign_keys(connection: object) -> None:
 # Main function to run all queries to structure the database
 def execute_db_operations(engine: object) -> None:
     """
-    Perform a series of database operations by using the provided engine as well as distributing it to various functions
+    The function executes a series of database operations using the provided engine object and prints a
+    success message if all operations are successful, or an error message if any operation fails.
+    
+    :param engine: The `engine` parameter is an object that represents the database engine or
+    connection. It is used to establish a connection to the database and perform various database
+    operations
+    :type engine: object
     """
     try:
         with engine.begin() as connection:

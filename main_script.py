@@ -21,7 +21,7 @@ cleaned_data = data_cleaner.clean_user_data(user_data)
 # Upload
 db_connector.upload_to_db(cleaned_data,'dim_users')
 
-####################### Reading PDF from link ##########################################
+# ####################### Reading PDF from link ##########################################
 
 path = "https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf"
 
@@ -96,6 +96,6 @@ db_connector.upload_to_db(cleaned_date_times,"dim_date_times")
 
 ################# MILESTONE 3 - STAR BASED DATABASE SCHEMA ###################################
 
-engine = db_connector.connect_my_db()
+engine = db_connector.init_db_engine(my_db=True)
 
 database_schema.execute_db_operations(engine)

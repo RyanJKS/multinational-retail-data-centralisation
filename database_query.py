@@ -5,13 +5,19 @@ import database_utils
 
 ########################################## MILESTONE 4 - QUERY DATABASE ##############################################
 def execute_sql_query(connection: object, query: str) -> None:
-    '''
-    Execute a SQL query using a database connection and handle exceptions.
+    """
+    The function `execute_sql_query` executes a SQL query using a given database connection and handles
+    any exceptions that occur.
+    
+    :param connection: The `connection` parameter is an object that represents a connection to a
+    database. It is created using a database driver `psycopg2` for PostgreSQL.
+    :type connection: object
+    :param query: The `query` parameter is a string that represents the SQL query you want to execute.
+    :type query: str
+    :return: The `execute_sql_query` function is returning the result of the
+    `connection.execute(text(query))` statement.
+    """
 
-    Args:
-    connection (object): Established database connection such as create_engine output.
-    query (str): SQL query string to execute.
-    '''
     try:
         return connection.execute(text(query))
     except Exception as e:
@@ -119,7 +125,7 @@ def sales_percentage_by_store(connection: object) -> None:
                 ROUND(
                     CAST(
                         (total_sales_unrounded / (SELECT SUM(total_sales_unrounded) FROM cte)) * 100
-                    AS NUMERIC), 2) AS total_percentage
+                    AS NUMERIC), 2) AS "percentage_total(%)"
             FROM 
                 cte
             ORDER BY 
@@ -265,7 +271,13 @@ def average_sale_time_yearly(connection: object) -> None:
 # Main function to run all queries to the database
 def execute_db_queries(engine: object) -> None:
     """
-    Perform a series of database queries by using the provided engine as well as distributing it to various functions
+    The function executes a series of database queries using the provided engine object and prints the
+    results.
+    
+    :param engine: The `engine` parameter is an object that represents the database connection. It is
+    used to execute SQL queries and interact with the database. The specific type of the `engine` object
+    depends on the database library or framework being used
+    :type engine: object
     """
     try:
         with engine.begin() as connection:
@@ -286,5 +298,5 @@ def execute_db_queries(engine: object) -> None:
 
 if __name__ == "__main__":
     db_connector = database_utils.DatabaseConnector()
-    engine = db_connector.connect_my_db()
+    engine = db_connector.init_db_engine(my_db=True)
     execute_db_queries(engine)
