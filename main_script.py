@@ -6,6 +6,7 @@ import database_utils
 
 #Create instance of main class
 db_connector = database_utils.DatabaseConnector()
+my_db_connector = database_utils.DatabaseConnector('my_db_creds.yaml') 
 db_extractor = data_extraction.DataExtractor()
 data_cleaner = data_cleaning.DataCleaning()
 
@@ -19,7 +20,7 @@ user_data = db_extractor.read_rds_table(db_connector, legacy_users)
 cleaned_data = data_cleaner.clean_user_data(user_data)
 
 # Upload
-db_connector.upload_to_db(cleaned_data,'dim_users')
+my_db_connector.upload_to_db(cleaned_data,'dim_users')
 
 # ####################### Reading PDF from link ##########################################
 
@@ -32,7 +33,7 @@ extract_pdf_data = db_extractor.retrieve_pdf_data(path)
 clean_pdf_data = data_cleaner.clean_card_data(extract_pdf_data)
 
 # Upload
-db_connector.upload_to_db(clean_pdf_data,"dim_card_details")
+my_db_connector.upload_to_db(clean_pdf_data,"dim_card_details")
 
 ###################### API #########################################
 
@@ -53,7 +54,7 @@ store_data = db_extractor.retrieve_stores_data(retrieve_store_endpoint,headers,n
 cleaned_store_data = data_cleaner.clean_store_data(store_data)
 
 # Upload
-db_connector.upload_to_db(cleaned_store_data,"dim_store_details")
+my_db_connector.upload_to_db(cleaned_store_data,"dim_store_details")
 
 ##########################  S3 Buckets ##################################
 
@@ -66,7 +67,7 @@ products = db_extractor.extract_from_s3(s3_uri,'csv')
 converted_weights = data_cleaner.convert_product_weights(products)
 
 # Upload
-db_connector.upload_to_db(converted_weights,"dim_products")
+my_db_connector.upload_to_db(converted_weights,"dim_products")
 
 ############################### RDS ##########################################
 
@@ -79,7 +80,7 @@ orders_data = db_extractor.read_rds_table(db_connector,orders_table)
 cleaned_orders = data_cleaner.clean_orders_data(orders_data)
 
 # Upload
-db_connector.upload_to_db(cleaned_orders,"orders_table")
+my_db_connector.upload_to_db(cleaned_orders,"orders_table")
 
 ################################# JSON FILE #####################################
 
@@ -92,10 +93,10 @@ date_times = db_extractor.extract_from_s3(s3_url,'json')
 cleaned_date_times = data_cleaner.clean_date_data(date_times)
 
 # Upload
-db_connector.upload_to_db(cleaned_date_times,"dim_date_times")
+my_db_connector.upload_to_db(cleaned_date_times,"dim_date_times")
 
 ################# MILESTONE 3 - STAR BASED DATABASE SCHEMA ###################################
 
-engine = db_connector.init_db_engine(my_db=True)
+engine = my_db_connector.init_db_engine()
 
 database_schema.execute_db_operations(engine)
